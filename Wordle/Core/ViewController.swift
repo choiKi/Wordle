@@ -9,6 +9,12 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    let answer = "after"
+    
+    private var guesses: [[Character?]] = Array(
+        repeating: Array(repeating: nil, count: 5), count: 6
+    )
+    
     let keyboardVC = KeyboardViewController()
     let boardVC = BoardViewController()
     
@@ -24,12 +30,14 @@ class ViewController: UIViewController {
     private func addChildren() {
         addChild(keyboardVC)
         keyboardVC.didMove(toParent: self)
+        keyboardVC.delegate = self
         keyboardVC.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(keyboardVC.view)
         
         addChild(boardVC)
         boardVC.didMove(toParent: self)
         boardVC.view.translatesAutoresizingMaskIntoConstraints = false
+        boardVC.datasource = self
         view.addSubview(boardVC.view)
 
         addConstraints()
@@ -50,4 +58,43 @@ class ViewController: UIViewController {
     }
 
 }
+extension ViewController: KeyboardViewControllerDelegate {
+    
+    func keyboardViewController(_ vc: KeyboardViewController, didTapKey letter: Character) {
+        
+        var stop = false
+        
+        for i in 0..<guesses.count {
+            for j in 0..<guesses[i].count{
+                if guesses[i][j] == nil {
+                    guesses[i][j] = letter
+                    stop = true
+                    break
+                }
+            }
+            if stop {
+                break
+            }
+        }
+        
+        boardVC.reloadData()
+    }
+}
 
+extension ViewController: BoardViewControllerDatasource {
+    var currentGuesses: [[Character?]] {
+        return guesses
+    }
+    
+    func boxColor(at indexPath: IndexPath) -> UIColor? {
+        guard let letter = guesses[indexPath.section][indexPath.row] else {
+            return nil
+        }
+        let indexAnswer = Array(answer)
+        if indexAnswer[indexPath.row] == letter {
+            return .systemGreen
+        }
+        
+        return .systemOrange
+    }
+}
