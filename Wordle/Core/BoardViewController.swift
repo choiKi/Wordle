@@ -25,7 +25,7 @@ class BoardViewController: UIViewController, UICollectionViewDelegate, UICollect
         collectionViewLayout: layout)
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .black
         collectionView.register(KeyCell.self, forCellWithReuseIdentifier: KeyCell.identifier)
         return collectionView
     }()

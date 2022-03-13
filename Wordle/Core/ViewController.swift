@@ -9,8 +9,11 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    let answer = "after"
+    let answers = [
+       "later","block","cheat","ultra","there","radio","south"
     
+    ]
+    var answer = ""
     private var guesses: [[Character?]] = Array(
         repeating: Array(repeating: nil, count: 5), count: 6
     )
@@ -22,6 +25,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        answer = answers.randomElement() ?? "after"
         
         view.backgroundColor = .systemGray6
         addChildren()
@@ -87,7 +91,15 @@ extension ViewController: BoardViewControllerDatasource {
     }
     
     func boxColor(at indexPath: IndexPath) -> UIColor? {
-        guard let letter = guesses[indexPath.section][indexPath.row] else {
+        let rowIndex = indexPath.section
+        
+        let count = guesses[rowIndex].compactMap({$0}).count
+        guard count == 5 else{
+            return nil
+        }
+        let indexedAnswer = Array(answer)
+        
+        guard let letter = guesses[indexPath.section][indexPath.row], indexedAnswer.contains(letter) else {
             return nil
         }
         let indexAnswer = Array(answer)
